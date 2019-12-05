@@ -39,7 +39,7 @@ cpdef list enveloppeConvexe(points):
     i = 1
     while i < len(result) + 2:
         p = result[(i - 1)%len(result)]
-        q = result[i%len(result)]%len(result)
+        q = result[i%len(result)]
         r = result[(i+1)%len(result)]
         if crossProduct(p, q, p, r) > 0:
             result.pop(i % len(result))

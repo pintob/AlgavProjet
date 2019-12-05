@@ -12,5 +12,8 @@ cpdef list parsePoint(path):
             file.close()
     except IOError:
         print(path + " unreadable")
-
+        lst.append(Point(100, 100))
+        lst.append(Point(100, 200))
+        lst.append(Point(200, 100))
+        lst.append(Point(200, 200))
     return lst

@@ -1,7 +1,15 @@
 from tkinter import Tk, Canvas
-
+import time
 from Algo import *
 from Parsing import *
+
+def chrono(fonction, arg):
+    startTime = time.time()
+    res = fonction(arg)
+    finalTime = time.time() - startTime
+    finalTime *= 1000
+    return (res, finalTime)
+
 
 def displayPoint(lst, canvas, color='red'):
     for p in lst:
@@ -32,9 +40,10 @@ res = calculPairesAntipodales(lst)
 for p1, p2 in res:
     displayLine(p1, p2, canvas)
 
-res = enveloppeConvexe(lst)
+res, time = chrono(enveloppeConvexe, lst)
 
 displayPolygone(res, canvas)
+print(time)
 
 canvas.grid()
 root.mainloop()

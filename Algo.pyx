@@ -37,9 +37,9 @@ cpdef list enveloppeConvexe(points):
 
     cdef list result = pixelSort(points)
     i = 1
-    while i < len(result):
-        p = result[i - 1]
-        q = result[i]
+    while i < len(result) + 2:
+        p = result[(i - 1)%len(result)]
+        q = result[i%len(result)]%len(result)
         r = result[(i+1)%len(result)]
         if crossProduct(p, q, p, r) > 0:
             result.pop(i % len(result))
@@ -59,14 +59,14 @@ cpdef list calculPairesAntipodales(points):
     n = len(p)
     cdef list antipodales = list()
     cdef k = 1
-    while (distance(p.get(k), p.get(n - 1), p.get(0)) < distance(p.get((k + 1) % n), p.get(n - 1), p.get(0))):
+    while (distance(p[k], p[n - 1], p[0]) < distance(p[(k + 1) % n], p[n - 1], p[0])):
         k+=1
 
     cdef int i = 0
     cdef int j = k
 
     while (i <= k and j < n):
-        while (distance(p[j], p[i], p[i + 1]) < distance(p[j + 1 % n], p[i], p[i + 1])) and j < n - 1:
+        while (distance(p[j], p[i], p[i + 1]) < distance(p[(j + 1) % n], p[i], p[i + 1])) and j < n - 1:
             antipodales.append([p[i], p[j]])
             j+=1
 

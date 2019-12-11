@@ -1,4 +1,14 @@
+import math
 from operator import length_hint
+
+cpdef float dotProduct(p, q, s, t):
+    return ((q.x - p.x) * (t.x - s.x) + (q.y - p.y) * (t.y - s.y))
+
+cpdef float angle(p, q, s, t):
+    if (p == q or s == t):
+        return float("infinity")
+    cdef cosTheta = dotProduct(p, q, s, t) /  (p.distance(q) * s.distance(t));
+    return math.acos(cosTheta)
 
 cpdef float crossProduct(p, q, s, t):
     return ((q.x - p.x) * (t.y - s.y) - (q.y - p.y) * (t.x - s.x))

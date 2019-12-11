@@ -16,3 +16,16 @@ cdef class Point(object):
 
     def __str__(self):
         return self.__repr__()
+
+cdef float polygoneArea(list lst):
+    cpdef float acc1 = 0
+    cpdef float acc2 = 0
+
+    for i in range(len(lst)-1):
+        acc1 += lst[i].x * lst[i+1].y
+        acc2 += lst[i+1].x * lst[i].y
+
+    acc1 += lst[-1].x * lst[0].y
+    acc2 += lst[0].x * lst[-1].y
+
+    return 1/2 * (acc1 - acc2)

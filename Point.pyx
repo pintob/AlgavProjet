@@ -17,7 +17,12 @@ cdef class Point(object):
     def __str__(self):
         return self.__repr__()
 
-cdef float polygoneArea(list lst):
+cpdef float polygonArea(list lst):
+    """
+    
+    :param lst: list of Point (convex polygon)
+    :return: float: the area of the polygon
+    """
     cpdef float acc1 = 0
     cpdef float acc2 = 0
 
@@ -28,4 +33,4 @@ cdef float polygoneArea(list lst):
     acc1 += lst[-1].x * lst[0].y
     acc2 += lst[0].x * lst[-1].y
 
-    return 1/2 * (acc1 - acc2)
+    return abs((1/2.) * (acc1 - acc2))

@@ -1,6 +1,14 @@
 import math
 from operator import length_hint
 
+cpdef float quality(float polygoneArea, float sndArea):
+    """
+    :param polygoneArea: area of the convex polygone
+    :param sndArea: area of the other algorithm
+    :return: float: a positive float representing the quality of the sndArea: 0 is perfect 
+    """
+    return (sndArea / polygoneArea) - 1
+
 cpdef float dotProduct(p, q, s, t):
     return ((q.x - p.x) * (t.x - s.x) + (q.y - p.y) * (t.y - s.y))
 

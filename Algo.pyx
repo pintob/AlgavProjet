@@ -1,25 +1,13 @@
-import math
-from operator import length_hint
+from Point import *
 
-cpdef float quality(float polygoneArea, float sndArea):
+cpdef float quality(float polygonArea, float sndArea):
     """
-    :param polygoneArea: area of the convex polygone
+    :param polygonArea: area of the convex polygone
     :param sndArea: area of the other algorithm
     :return: float: a positive float representing the quality of the sndArea: 0 is perfect 
     """
-    return (sndArea / polygoneArea) - 1
+    return (sndArea / polygonArea) - 1
 
-cpdef float dotProduct(p, q, s, t):
-    return ((q.x - p.x) * (t.x - s.x) + (q.y - p.y) * (t.y - s.y))
-
-cpdef float angle(p, q, s, t):
-    if (p == q or s == t):
-        return float("infinity")
-    cdef cosTheta = dotProduct(p, q, s, t) /  (p.distance(q) * s.distance(t));
-    return math.acos(cosTheta)
-
-cpdef float crossProduct(p, q, s, t):
-    return ((q.x - p.x) * (t.y - s.y) - (q.y - p.y) * (t.x - s.x))
 
 cpdef list pixelSort(points):
     if len(points) < 4:

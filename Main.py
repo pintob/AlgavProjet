@@ -1,15 +1,8 @@
-from Parsing import *
-#
-# lst = parsePoint("LittleTest/1.txt")
-#
-# print(lst)
+from Right import *
 from Point import *
 
-lst = list()
+p1 = Point(5, 5)
 
-lst.append(Point(0, 0))
-lst.append(Point(0, 1))
-lst.append(Point(1, 1))
-lst.append(Point(1, 0))
-
-print(polygonArea(lst))
+for _ in range(4):
+    p1.rotate(math.pi/2)
+    print(p1)

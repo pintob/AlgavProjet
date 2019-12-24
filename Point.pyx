@@ -8,7 +8,7 @@ cdef class Point(object):
         self.x = x
         self.y = y
 
-    cdef float distance(self, point):
+    cpdef float distance(self, point):
         return math.sqrt((self.x - point.x)**2 + (self.y - point.y)**2 )
 
     def __repr__(self):

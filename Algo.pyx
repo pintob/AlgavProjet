@@ -1,3 +1,6 @@
+from Crypto.Random.random import randint
+
+from Cercle import createCercleFromPoint
 from Point import *
 
 cpdef float quality(float polygonArea, float sndArea):
@@ -79,3 +82,39 @@ cpdef list calculPairesAntipodales(points):
         antipodales.append([p[i], p[j]])
         i+=1
     return antipodales
+
+def ritter(list points):
+    def get2RandomPoint(list points):
+        cdef int x = randint(0, len(points) - 1)
+        cdef int y = randint(0, len(points) - 1)
+        while(x == y):
+            y = randint(0, len(points))
+
+        return (points[x], points[y])
+
+    def extendsCercle(p1, p2, n):
+        c = centerPoint(p1, p2)
+        d = c.distance(n)
+        alpha = ((c.distance(p2))/d)
+
+        x = (c.x - n.x)
+        y = (c.y - n.y)
+
+        px = c.x + x * alpha
+        py = c.y + y * alpha
+
+        nP = Point(px, py)
+        return createCercleFromPoint(nP, n), nP, n
+
+    cdef object cercle = None
+    cdef object p1 = None
+    cdef object p2 = None
+
+    p1, p2 = get2RandomPoint(points)
+    cercle = createCercleFromPoint(p1,  p2)
+
+    for point in points:
+        if not cercle.contain(point):
+            cercle, p1, p2 = extendsCercle(p1, p2, point)
+
+    return cercle

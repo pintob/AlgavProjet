@@ -2,6 +2,7 @@ from Crypto.Random.random import randint
 
 from Cercle import createCercleFromPoint
 from Point import *
+from Right import Right
 
 cpdef float quality(float polygonArea, float sndArea):
     """
@@ -22,10 +23,10 @@ cpdef list pixelSort(points):
     maxY = [None] * (1 + maxX)
     minY = [None] * (1 + maxX)
     for p in points:
-        if maxY[p.x] is None or p.y > maxY[p.x].y:
-            maxY[p.x] = p
-        if minY[p.x] is None or p.y < minY[p.x].y:
-            minY[p.x] = p
+        if maxY[(int)(p.x)] is None or p.y > maxY[(int)(p.x)].y:
+            maxY[(int)(p.x)] = p
+        if minY[(int)(p.x)] is None or p.y < minY[(int)(p.x)].y:
+            minY[(int)(p.x)] = p
 
     cdef list result = list()
     for i in range(maxX+1):
@@ -84,37 +85,33 @@ cpdef list calculPairesAntipodales(points):
     return antipodales
 
 def ritter(list points):
-    def get2RandomPoint(list points):
+    def randomCercle(list points):
         cdef int x = randint(0, len(points) - 1)
         cdef int y = randint(0, len(points) - 1)
         while(x == y):
             y = randint(0, len(points))
 
-        return (points[x], points[y])
+        return createCercleFromPoint(points[x], points[y])
 
-    def extendsCercle(p1, p2, n):
-        c = centerPoint(p1, p2)
-        d = c.distance(n)
-        alpha = ((c.distance(p2))/d)
+    def extendsCercle(c, n):
+        d = c.center.distance(n)
+        alpha = (c.radius/d)
 
-        x = (c.x - n.x)
-        y = (c.y - n.y)
+        x = (c.center.x - n.x)
+        y = (c.center.y - n.y)
 
-        px = c.x + x * alpha
-        py = c.y + y * alpha
+        px = c.center.x + x * alpha
+        py = c.center.y + y * alpha
 
         nP = Point(px, py)
-        return createCercleFromPoint(nP, n), nP, n
+        return createCercleFromPoint(nP, n)
 
     cdef object cercle = None
-    cdef object p1 = None
-    cdef object p2 = None
 
-    p1, p2 = get2RandomPoint(points)
-    cercle = createCercleFromPoint(p1,  p2)
+    cercle = randomCercle(points)
 
     for point in points:
         if not cercle.contain(point):
-            cercle, p1, p2 = extendsCercle(p1, p2, point)
+            cercle = extendsCercle(cercle, point)
 
     return cercle

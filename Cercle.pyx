@@ -1,4 +1,5 @@
 from Point import Point, centerPoint
+import math
 
 cdef class Cercle(object):
     cpdef public center
@@ -10,6 +11,9 @@ cdef class Cercle(object):
 
     cpdef contain(self, point):
         return self.center.distance(point) < self.radius
+
+    cpdef float area(self):
+        return  math.pi * self.radius * self.radius
 
     def __repr__(self):
         return str(self.center) + ', ' + str(self.radius)

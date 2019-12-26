@@ -17,6 +17,9 @@ cdef class Point(object):
     def __str__(self):
         return self.__repr__()
 
+    def __add__(self, other):
+        return Point(self.x + other.x, self.y + other.y)
+
     cpdef clone(self):
         return Point(self.x, self.y)
 

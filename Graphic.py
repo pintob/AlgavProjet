@@ -1,6 +1,7 @@
 from tkinter import Tk, Canvas
 import time
 from Algo import *
+from ListOfPointGenerator import randomCercle, randomRectangle
 from Parsing import *
 from Cercle import *
 
@@ -33,11 +34,12 @@ def displayPolygone(lst, canvas):
         displayLine(lst[i], lst[i+1], canvas, color='blue')
     displayLine(lst[0], lst[-1], canvas, color='blue')
 
-lst = parsePoint("samples/test-5.points")
+lst = randomRectangle(500)
 
 root = Tk()
 canvas = Canvas(root, background="white")
 canvas.config(width=800, height=600)
+from Parsing import parsePoint
 
 for p in lst:
     displayPoint(lst, canvas)

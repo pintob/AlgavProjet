@@ -14,9 +14,7 @@ def parseAllFileFromRep(rep):
 cpdef list randomList(algo, nb):
     return [algo() for _ in range(nb)]
 
-cpdef list randomCercle(int nbPoint):
-    xMax = 800
-    yMax = 600
+cpdef list randomCercle(int nbPoint, xMax = 800, yMax = 600):
     difMax = (int)(min(xMax/2, yMax/2) * 0.9)
     cdef list lst = list()
 

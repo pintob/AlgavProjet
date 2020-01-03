@@ -1,8 +1,9 @@
 from matplotlib import pyplot
 
 from Algo import enveloppeConvexe, quality, ritter
-from ListOfPointGenerator import parseAllFileFromRep
+from ListOfPointGenerator import parseAllFileFromRep, randomCercle
 from Point import polygonArea
+from utils import *
 
 def analyseQuality(lst):
     """
@@ -21,6 +22,21 @@ def analyse2Str(tuples):
 
     return "average: {0:.5f} | standard deviation: {1:.7f}".format(aver, stdDev)
 
+def drawnPlotFreq(name, lst):
+    _lst = [0] * (int)(100 * max(lst) + 1)
+    def lstOfFreq(lst):
+        for i in lst:
+            _lst[(int)(100*i)] += 1
+
+        return _lst, [0.01 * i for i in range(len(_lst))]
+
+    _lst, absc = lstOfFreq(lst)
+
+    pyplot.plot(absc, _lst, label = "number of element \nsorted by range of quality")
+    pyplot.plot(absc, [0 for _ in _lst], label = "zero")
+    pyplot.legend(loc="upper right")
+    pyplot.show()
+
 def drawnPlot(name, lst):
     absc = list(range(len(lst)))
     pyplot.plot(absc, lst, label = name)
@@ -28,8 +44,32 @@ def drawnPlot(name, lst):
     pyplot.show()
     print(analyse2Str(analyseQuality(lst)))
 
+def drawnPlotTime(generator, absc, algorithms):
+    """
+    :param generator: function(int)-> return a list of point
+    :param absc: list<int>
+    :param algorithms: list<function(list<Point>)->
 
-def createListOfArea(list, algo):
+    drawn a plot of time take by each algorithm to run of list of
+    each element of absc size
+    """
+
+    times = list()
+    names = list()
+    points = generateListOfPoint(generator, absc)
+
+    for algo in algorithms:
+        times.append(generateListOfTime(points, algo))
+        names.append(algo.__name__)
+
+    for i in range(len(times)):
+        pyplot.plot(absc, times[i], label=names[i])
+
+    pyplot.legend(loc="upper left")
+    pyplot.show()
+
+
+def createListOfAreaQuality(list, algo):
     """
 
     :param list: list of point
@@ -44,7 +84,10 @@ def createListOfArea(list, algo):
 
 
 
-lst = parseAllFileFromRep("randomRectangle")
-lstQ = createListOfArea(lst, ritter)
-print(lstQ)
-drawnPlot("quality of ritter on samples test", lstQ)
+# lst = parseAllFileFromRep("randomRectangle")
+# lstQ = createListOfAreaQuality(lst, ritter)
+# drawnPlotFreq("quality of ritter on samples test", lstQ)
+# drawnPlot("quality of ritter on samples test", lstQ)
+
+
+drawnPlotTime(randomCercle, [10**i for i in range(1, 5)], [enveloppeConvexe, ritter])

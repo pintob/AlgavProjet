@@ -10,7 +10,7 @@ cdef class Cercle(object):
         self.radius = radius
 
     cpdef contain(self, point):
-        return self.center.distance(point) < self.radius
+        return self.center.squareDist(point) < self.radius * self.radius
 
     cpdef float area(self):
         return  math.pi * self.radius * self.radius

@@ -1,16 +1,7 @@
 from tkinter import Tk, Canvas
-import time
 from Algo import *
 from ListOfPointGenerator import randomCercle, randomRectangle
-from Parsing import *
-from Cercle import *
 
-def chrono(fonction, arg):
-    startTime = time.time()
-    res = fonction(arg)
-    finalTime = time.time() - startTime
-    finalTime *= 1000
-    return (res, finalTime)
 
 
 def displayPoint(lst, canvas, color='red'):

@@ -89,21 +89,21 @@ def ritter(list points):
         cdef int x = randint(0, len(points) - 1)
         cdef int y = randint(0, len(points) - 1)
         while(x == y):
-            y = randint(0, len(points))
+            y = randint(0, len(points) - 1)
 
         return createCercleFromPoint(points[x], points[y])
 
     def extendsCercle(c, n):
-        d = c.center.distance(n)
-        alpha = (c.radius/d)
+        cdef float d = c.center.distance(n)
+        cdef float alpha = (c.radius/d)
 
-        x = (c.center.x - n.x)
-        y = (c.center.y - n.y)
+        cdef float x = (c.center.x - n.x)
+        cdef float y = (c.center.y - n.y)
 
-        px = c.center.x + x * alpha
-        py = c.center.y + y * alpha
+        cdef float px = c.center.x + x * alpha
+        cdef float py = c.center.y + y * alpha
 
-        nP = Point(px, py)
+        cdef object nP = Point(px, py)
         return createCercleFromPoint(nP, n)
 
     cdef object cercle = None

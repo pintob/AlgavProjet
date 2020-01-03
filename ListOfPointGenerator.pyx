@@ -3,8 +3,7 @@ from random import random
 from math import pi, cos, sin
 
 from Parsing import *
-from Crypto.Random.random import *
-
+from random import randint
 def parseAllFileFromRep(rep):
     list = os.listdir(rep)
     for i in range(len(list)):

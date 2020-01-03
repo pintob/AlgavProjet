@@ -1,4 +1,4 @@
 all:
-	python3 setup.pyx build_ext --inplace
+	python3.7 setup.pyx build_ext --inplace
 clear:
 	rm -f *.c *.so

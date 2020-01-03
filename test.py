@@ -90,4 +90,4 @@ def createListOfAreaQuality(list, algo):
 # drawnPlot("quality of ritter on samples test", lstQ)
 
 
-drawnPlotTime(randomCercle, [10**i for i in range(1, 5)], [enveloppeConvexe, ritter])
+drawnPlotTime(randomCercle, [j*(10**i) for i in range(1, 6) for j in range(1, 10)], [enveloppeConvexe, ritter])

@@ -1,8 +1,7 @@
-from Crypto.Random.random import randint
+from random import randint
 
 from Cercle import createCercleFromPoint
 from Point import *
-from Right import Right
 
 cpdef float quality(float polygonArea, float sndArea):
     """
@@ -46,7 +45,11 @@ cpdef list enveloppeConvexe(points):
         return points
 
     cdef list result = pixelSort(points)
-    i = 1
+    cdef int i = 1
+    cdef object p # @Point
+    cdef object q # @Point
+    cdef object r # @Point
+
     while i < len(result) + 2:
         p = result[(i - 1)%len(result)]
         q = result[i%len(result)]
@@ -65,8 +68,8 @@ cpdef float distance(p, a, b):
     return abs(crossProduct(a, b, a, p))
 
 cpdef list calculPairesAntipodales(points):
-    p = enveloppeConvexe(points)
-    n = len(p)
+    cdef list p = enveloppeConvexe(points)
+    cdef int n = len(p)
     cdef list antipodales = list()
     cdef k = 1
     while (distance(p[k], p[n - 1], p[0]) < distance(p[(k + 1) % n], p[n - 1], p[0])):
@@ -88,6 +91,7 @@ def ritter(list points):
     def randomCercle(list points):
         cdef int x = randint(0, len(points) - 1)
         cdef int y = randint(0, len(points) - 1)
+
         while(x == y):
             y = randint(0, len(points) - 1)
 
@@ -107,7 +111,6 @@ def ritter(list points):
         return createCercleFromPoint(nP, n)
 
     cdef object cercle = None
-
     cercle = randomCercle(points)
 
     for point in points:

@@ -9,7 +9,7 @@ cdef class Point(object):
         self.y = y
 
     cpdef float distance(self, point):
-        return math.sqrt((self.x - point.x)**2 + (self.y - point.y)**2)
+        return math.sqrt(self.squareDist(point))
 
     cpdef float squareDist(self, point):
         return (self.x - point.x) * (self.x - point.x) + (self.y - point.y) * (self.y - point.y)

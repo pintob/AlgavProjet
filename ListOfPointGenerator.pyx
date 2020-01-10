@@ -25,9 +25,7 @@ cpdef list randomCercle(int nbPoint, xMax = 800, yMax = 600):
 
     return lst
 
-cpdef list randomRectangle(int nbPoint):
-    xMax = 800
-    yMax = 600
+cpdef list randomRectangle(int nbPoint, xMax = 800, yMax = 600):
 
     cdef list lst = list()
 

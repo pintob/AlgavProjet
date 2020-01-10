@@ -1,7 +1,7 @@
 from matplotlib import pyplot
 
 from Algo import enveloppeConvexe, quality, ritter
-from ListOfPointGenerator import parseAllFileFromRep, randomCercle
+from ListOfPointGenerator import parseAllFileFromRep, randomCercle, randomRectangle
 from Point import polygonArea
 from utils import *
 
@@ -32,7 +32,7 @@ def drawnPlotFreq(name, lst):
 
     _lst, absc = lstOfFreq(lst)
 
-    pyplot.plot(absc, _lst, label = "number of element \nsorted by range of quality")
+    pyplot.plot(absc, _lst, label = name)
     pyplot.plot(absc, [0 for _ in _lst], label = "zero")
     pyplot.legend(loc="upper right")
     pyplot.show()
@@ -84,10 +84,10 @@ def createListOfAreaQuality(list, algo):
 
 
 
-# lst = parseAllFileFromRep("randomRectangle")
-# lstQ = createListOfAreaQuality(lst, ritter)
-# drawnPlotFreq("quality of ritter on samples test", lstQ)
-# drawnPlot("quality of ritter on samples test", lstQ)
+lst = parseAllFileFromRep("randomRectangle")
+lstQ = createListOfAreaQuality(lst, ritter)
+drawnPlotFreq("répartition de la qualité de Ritter sur randomCercle", lstQ)
+drawnPlot("quality of ritter on samples test", lstQ)
 
 
-drawnPlotTime(randomCercle, [j*(10**i) for i in range(1, 6) for j in range(1, 10)], [enveloppeConvexe, ritter])
+# drawnPlotTime(randomCercle, [(10**i) for i in range(1, 7)], [enveloppeConvexe, ritter])

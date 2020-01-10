@@ -1,5 +1,5 @@
 import time
-
+from math import sqrt
 
 cpdef float chrono(function, arg):
     startTime = time.time()
@@ -9,8 +9,9 @@ cpdef float chrono(function, arg):
     return finalTime
 
 cpdef list generateListOfPoint(generator, absc):
-
-    allElem = generator(absc[-1]) # the last element of absc is the maximum
+    cdef int m = absc[-1]
+    cdef int x = (int)(sqrt(m))
+    allElem = generator(m, x, x*2) # the last element of absc is the maximum
     return [allElem[0:i] for i in absc]
 
 cpdef list generateListOfTime(points, algo):

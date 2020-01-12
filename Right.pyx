@@ -1,4 +1,6 @@
-from Point import Point
+import math
+
+from Point import Point, dotProduct
 
 cdef class Right(object):
     cpdef public zero
@@ -18,23 +20,24 @@ cdef class Right(object):
         return self.__repr__()
 
     cpdef clone(self):
-        return Right(self.zero.clone(), self.vector.clone())
+        return Right(self.zero, self.vector + self.zero)
 
 
-cpdef intersection(Right r1, Right r2):
-  """On trouve le resultat du deuxieme point moins le premier"""
-  cdef object pRes = Point(r2.zero.x-r1.zero.x,r2.zero.y-r1.zero.y)
-  """ on calcul le produit vectoriel des vecteur directeur"""
+# cpdef intersection(Right r1, Right r2):
+#     cdef object pRes = Point(r2.zero.x-r1.zero.x,r2.zero.y-r1.zero.y)
+#     cdef float uvRes = (r1.vector.x*r2.vector.y)-(r2.vector.x*r1.vector.y)
+#     cdef float qp_vRes =(pRes.x*r2.vector.y)-(pRes.y*r2.vector.x)
+#     cdef object intersc = Point((r1.zero.x+((qp_vRes/uvRes)*r1.vector.x)),
+#     (r1.zero.y+((qp_vRes/uvRes)*r1.vector.y)))
+#
+#     return intersc
 
-  cdef float uvRes = (r1.vector.x*r2.vector.y)-(r2.vector.x*r1.vector.y)
-  """ On calcul le produit vectoriel entre le resulta du premier calcul et le
-  vecteur directeur de la deuxième droite """
-  cdef float qp_vRes =((pRes.x*r2.vector.y)-(pRes.x*r2.vector.y))
-  """ on trouve les cordonnées du point d'intersection des deux droites """
-  cdef object intersc = Point((r1.zero.x+((qp_vRes/uvRes)*r1.vector.x)),
-  (r1.zero.y+((qp_vRes/uvRes)*r1.vector.y)))
+cpdef float angle(p, q, s, t):
 
-  return intersc
+    if (p == q or s == t):
+        return float("infinity")
+    cdef cosTheta = dotProduct(p, q, s, t) /  (p.distance(q) * s.distance(t));
+    return math.acos(cosTheta)
 
 
 

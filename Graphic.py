@@ -33,14 +33,13 @@ class GUI(object):
             self.displayLine(lst[i], lst[i+1], 'blue')
         self.displayLine(lst[0], lst[-1], 'blue')
 
-lst = randomRectangle(500)
+lst = randomCercle(500)
 
 gui = GUI()
-
-res = toussain(lst)
 p = enveloppeConvexe(lst)
 
-gui.displayPoint(lst)
+res = toussain(p, True)
+gui.displayPoint(p)
 gui.displayPolygone(res)
 gui.displayPolygone(p)
 

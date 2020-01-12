@@ -1,8 +1,8 @@
+from copy import deepcopy
 from random import randint
 
 from Cercle import createCercleFromPoint
 from Point import *
-from Right import intersection, Right
 
 cpdef float quality(float polygonArea, float sndArea):
     """
@@ -120,75 +120,220 @@ def ritter(list points):
 
     return cercle
 
-def toussain(list points):
-  def calculAirRectangle(list rights):
-    """trouve les intersection des  droites """
+# def toussain(list points, isConvexe = False):
+#     HorizontalVector = Point(0, 1)
+#     VerticalVector = Point(1, 0)
+#
+#     def convertRightIntoRectangle(list rights):
+#         return [intersection(rights[0], rights[1]), intersection(rights[1], rights[2]),
+#                       intersection(rights[2], rights[3]), intersection(rights[3], rights[0])]
+#
+#     def getExtremPoints(list points):
+#         def getExtremPoint(list points, compar):
+#             cdef int extrem = 0
+#             for i in range(1, len(points)):
+#                 if compar(points[extrem], points[i]):
+#                     extrem = i
+#
+#             return extrem
+#          # East, North, Ouest, South
+#         return [
+#             getExtremPoint(points, lambda p1, p2: p1.x < p2.x),
+#             getExtremPoint(points, lambda p1, p2: p1.y < p2.y),
+#             getExtremPoint(points, lambda p1, p2: p1.x > p2.x),
+#             getExtremPoint(points, lambda p1, p2: p1.y > p2.y)
+#         ]
+#
+#     def convertIndexIntoPoint(list index, list points):
+#         return [points[i] for i in index]
+#
+#     def createInitaleRectangeFromExtremPoint(list points, list extrem):
+#         cdef list rights = [
+#             Right(points[extrem[0]], points[extrem[0]] + HorizontalVector),
+#             Right(points[extrem[1]], points[extrem[1]] + VerticalVector),
+#             Right(points[extrem[2]], points[extrem[2]] + HorizontalVector),
+#             Right(points[extrem[3]], points[extrem[3]] + VerticalVector)
+#         ]
+#         return  convertRightIntoRectangle(rights), rights
+#
+#     def incArrayForIndex(list array, int n):
+#         return list(map(lambda x: (x+1)%n, array))
+#
+#     def boxing(lst1, lst2):
+#         assert (len(lst1) == len(lst2))
+#         return [(lst1[i], lst2[i]) for i in range(len(lst1))]
+#
+#     def rotateRights(list rigths, float theta):
+#         for r in rigths:
+#             r.rotate(theta)
+#
+#     def getMinAngle(list r1, list r2):
+#         assert (len(r1) == len(r2))
+#         minimum = angle(r1[0], r2[0])
+#         print("0:", minimum)
+#         for i in range(1, len(r1)):
+#             tmp = angle(r1[i], r2[i])
+#             print(i,":",tmp)
+#             if tmp < minimum:
+#                 minimum = tmp
+#         return minimum
+#
+#     def rightsFromPoints(list p1, list p2):
+#         cdef list acc = list()
+#         for a, b in boxing(p1, p2):
+#             acc.append(Right(a, b))
+#
+#         return acc
+#
+#     if not isConvexe:
+#         points = enveloppeConvexe(points)
+#
+#     e = getExtremPoints(points)
+#     p, right = createInitaleRectangeFromExtremPoint(points, e)
+#
+#     for _ in range(5):
+#         e1 = incArrayForIndex(e, len(points))
+#         env = convertIndexIntoPoint(e, points)
+#         env1 = convertIndexIntoPoint(e1, points)
+#         alpha = getMinAngle(right, rightsFromPoints(env, env1))
+#         print(alpha)
+#
+#         newRight = [r.clone() for r in right] #deepcopy
+#         rotateRights(newRight, alpha)
+#         np = convertRightIntoRectangle(newRight)
+#
+#         print(p, np)
+#         e = e1 #inc index
+#         right = newRight #rotation
+#         if polygonArea(p) > polygonArea(np):
+#             p = np
+#
+#     return p
 
-    cdef object p1 = intersection(rights[0],rights[1])
-    cdef object p2 = intersection(rights[1],rights[2])
-    cdef object p3 = intersection(rights[2],rights[3])
-    cdef object p4 = intersection(rights [3],rights[0])
-    """calcul de  l'air """
-    return p1.distance(p2)*p3.distance(p4)
 
-  def creeRectangleBase(list points):
-    """ on chercher les points d'abssice et ordonné extréme """
-    cdef object abmin = points[0]
-    cdef object ormin = points[0]
-    cdef object abmax = points[0]
-    cdef object ormax = points[0]
-    for point in points :
-      if abmin.x>point.x :
-        abmin = point
-      else :
-        if abmax.x<point.x:
-          abmax = point
-      if ormin.y> point.y:
-        ormin = point
-      else :
-        if ormax.y<point.y :
-          ormax = point
 
-    return[Right(ormin,Point(ormin.x+1,ormin.y)),
-		Right(abmax,Point(abmax.x,abmax.y+1)),
-		Right(ormax,Point(ormax.x+1,ormax.y)),
-		Right(abmin,Point(abmin.x,abmin.y+1))]
+def toussain(list points, isConvex=False):
 
-  def trouverAngleMin(list pointsConv,list pointsRec):
-    cdef float alpha = -10
-    """ pour chaque point de la liste pointConv """
-    cdef float delta = -10
-    for i in (range(len(pointsConv)-1)):
-      """ on itere sur la list pointRec """
+    def intersection(start0, dir0, start1, dir1):
+        dd = dir0.x*dir1.y-dir0.y*dir1.x
+        dx = start1.x-start0.x
+        dy = start1.y-start0.y
+        t = (dx*dir1.y-dy*dir1.x)/dd
+        return Point(start0.x+t*dir0.x, start0.y+t*dir0.y)
 
-      for id in range(len(pointsRec)):
-        delta =angle(pointsConv[i],pointsConv[(i+1)%(len(pointsConv))],Point(1,1),(pointsRec[id].vector))
+    def majRect(BestObb, bestObbArea, leftStart,
+                leftDir, rightStart, rightDir, topStart, topDir, bottomStart, bottomDir):
 
-        """ On test si alpha doit être actualiser """
-        if (alpha>delta or alpha==-10) :
-          alpha = delta
+        obbUpperLeft = intersection(leftStart, leftDir, topStart, topDir)
+        obbUpperRight = intersection(rightStart, rightDir, topStart, topDir)
+        obbBottomLeft = intersection(bottomStart, bottomDir, leftStart, leftDir)
+        obbBottomRight = intersection(bottomStart, bottomDir, rightStart, rightDir)
 
-    return alpha
+        obbArea = polygonArea([obbUpperLeft, obbBottomLeft, obbBottomRight, obbUpperRight])
 
-  def rotationRectangle(list rights,alpha):
-    cdef object temp = [None] * 4
+        if obbArea < bestObbArea:
+            BestObb = [obbUpperLeft, obbBottomLeft, obbBottomRight, obbUpperRight]
+            bestObbArea = obbArea
 
-    for i in range(len(rights)):
-      rights[i].rotate(alpha)
-      temp[i]=rights[i]
+        return BestObb, bestObbArea
 
-    return temp
+    ###################### MAIN #######################
 
-  cdef object rec = None
-  cdef object recTempo = None
-  rec = creeRectangleBase(points)
-  for i in (range(len(points))):
+    if not isConvex:
+        points = enveloppeConvexe(points)
 
-    recTempo =rotationRectangle(rec,(trouverAngleMin([points[i],points[(i+1)%len(points)]],rec)))
-    if calculAirRectangle(rec)>calculAirRectangle(recTempo):
-      rec=recTempo
+    cdef list edgeDirs = [None for _ in points]
+    # cdef list BestObb = list()
+    # cdef float bestObbArea = float("inf")
 
-  print(rec)
-  rec = [intersection(rec[0], rec[1]), intersection(rec[1], rec[2]),
-         intersection(rec[2], rec[3]), intersection(rec[3], rec[0])]
-  return rec
+    for i in range(len(points)):
+        edgeDirs[i] = points[(i+1)%len(points)] - points[i]
+        edgeDirs[i].normalize()
+
+    minPt = Point(float("Inf"), float("Inf"))
+    maxPt = Point(-float("Inf"), -float("Inf"))
+    cdef object leftIdx = None, rightIdx = None, topIdx = None, bottomIdx = None
+
+    for i in range(len(points)):
+        pt = points[i]
+        if (pt.x < minPt.x):
+            minPt.x = pt.x
+            leftIdx = i
+
+        if (pt.x > maxPt.x):
+            maxPt.x = pt.x
+            rightIdx = i
+
+        if (pt.y < minPt.y):
+            minPt.y = pt.y
+            bottomIdx = i
+
+        if (pt.y > maxPt.y):
+            maxPt.y = pt.y
+            topIdx = i
+
+    leftDir = Point(0, -1)
+    rightDir = Point(0, 1)
+    topDir = Point(-1, 0)
+    bottomDir = Point(1, 0)
+
+    BestObb = [
+        Point(minPt.x, minPt.y),
+        Point(minPt.x, maxPt.y),
+        Point(maxPt.x, maxPt.y),
+        Point(maxPt.x, minPt.y)
+        ]
+    bestObbArea = polygonArea(BestObb)
+
+    for i in range(len(points)):
+        phis = [
+            math.acos(leftDir.dot(edgeDirs[leftIdx])),
+            math.acos(rightDir.dot(edgeDirs[rightIdx])),
+            math.acos(topDir.dot(edgeDirs[topIdx])),
+            math.acos(bottomDir.dot(edgeDirs[bottomIdx]))
+        ]
+
+        m = min(phis)
+
+        if phis[0] == m:
+            leftDir = edgeDirs[leftIdx].clone()
+            rightDir = leftDir.clone()
+            rightDir.negate()
+            topDir = leftDir.orthogonal()
+            bottomDir = topDir.clone()
+            bottomDir.negate()
+            leftIdx = (leftIdx+1)%len(points)
+        elif phis[1] == m:
+            rightDir = edgeDirs[rightIdx].clone()
+            leftDir = rightDir.clone()
+            leftDir.negate()
+            topDir = leftDir.orthogonal()
+            bottomDir = topDir.clone()
+            bottomDir.negate()
+            rightIdx = (rightIdx+1)%len(points)
+        elif phis[2] == m:
+            topDir = edgeDirs[topIdx].clone()
+            bottomDir = topDir.clone()
+            bottomDir.negate()
+            leftDir = bottomDir.orthogonal()
+            rightDir = leftDir.clone()
+            rightDir.negate()
+            topIdx = (topIdx+1)%len(points)
+        elif phis[3] == m:
+            bottomDir = edgeDirs[bottomIdx].clone()
+            topDir = bottomDir.clone()
+            topDir.negate()
+            leftDir = bottomDir.orthogonal()
+            rightDir = leftDir.clone()
+            rightDir.negate()
+            bottomIdx = (bottomIdx+1)%len(points)
+        else:
+            raise RuntimeError()
+
+
+        BestObb, bestObbArea = majRect(BestObb, bestObbArea, points[leftIdx], leftDir,
+                                       points[rightIdx], rightDir, points[topIdx], topDir,
+                                       points[bottomIdx], bottomDir)
+
+        return BestObb
+    return BestObb

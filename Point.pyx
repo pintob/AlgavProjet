@@ -14,6 +14,16 @@ cdef class Point(object):
     cpdef float squareDist(self, point):
         return (self.x - point.x) * (self.x - point.x) + (self.y - point.y) * (self.y - point.y)
 
+    cpdef float dot(self, point):
+        return self.x * point.x + self.y * point.y
+
+    cpdef negate(self):
+        self.x = -self.x
+        self.y = -self.y
+
+    cpdef orthogonal(self):
+        return Point(self.y, -self.x)
+
     def __repr__(self):
         return '('+ str(self.x) + ', ' + str(self.y) + ')'
 
@@ -22,6 +32,14 @@ cdef class Point(object):
 
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
+
+    cpdef normalize(self):
+        l = math.sqrt(self.x * self.x + self.y * self.y)
+        self.x /= l
+        self.y /= l
 
     cpdef clone(self):
         return Point(self.x, self.y)
@@ -57,12 +75,6 @@ cpdef Point centerPoint(Point p1, Point p2):
 
 cpdef float dotProduct(p, q, s, t):
     return ((q.x - p.x) * (t.x - s.x) + (q.y - p.y) * (t.y - s.y))
-
-cpdef float angle(p, q, s, t):
-    if (p == q or s == t):
-        return float("infinity")
-    cdef cosTheta = dotProduct(p, q, s, t) /  (p.distance(q) * s.distance(t));
-    return math.acos(cosTheta)
 
 cpdef float crossProduct(p, q, s, t):
     return ((q.x - p.x) * (t.y - s.y) - (q.y - p.y) * (t.x - s.x))

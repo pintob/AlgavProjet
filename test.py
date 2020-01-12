@@ -1,6 +1,6 @@
 from matplotlib import pyplot
 
-from Algo import enveloppeConvexe, quality, ritter
+from Algo import enveloppeConvexe, quality, ritter, toussain
 from ListOfPointGenerator import parseAllFileFromRep, randomCercle, randomRectangle
 from Point import polygonArea
 from utils import *
@@ -77,17 +77,18 @@ def createListOfAreaQuality(list, algo):
     :return:
     """
 
-    lstAlgo = [algo(list[i]).area() for i in range(len(list))]
+    # lstAlgo = [algo(list[i]).area() for i in range(len(list))]
+    lstAlgo = [polygonArea(algo(list[i])) for i in range(len(list))]
     lstConvex = [polygonArea(enveloppeConvexe(list[i])) for i in range(len(list))]
 
     return [quality(lstConvex[i], lstAlgo[i]) for i in range(len(lstAlgo))]
 
 
 
-lst = parseAllFileFromRep("randomRectangle")
-lstQ = createListOfAreaQuality(lst, ritter)
-drawnPlotFreq("répartition de la qualité de Ritter sur randomCercle", lstQ)
-drawnPlot("quality of ritter on samples test", lstQ)
+lst = parseAllFileFromRep("randomCercle")
+lstQ = createListOfAreaQuality(lst, toussain)
+# drawnPlotFreq("répartition de la qualité de 'toussain' sur randomCercle", lstQ)
+# drawnPlot("quality of ritter on samples test", lstQ)
 
 
-# drawnPlotTime(randomCercle, [(10**i) for i in range(1, 7)], [enveloppeConvexe, ritter])
+drawnPlotTime(randomCercle, [(10**i) for i in range(1, 7)], [enveloppeConvexe, ritter, toussain])

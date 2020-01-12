@@ -331,9 +331,8 @@ def toussain(list points, isConvex=False):
             raise RuntimeError()
 
 
-        majRect(BestObb, bestObbArea, points[leftIdx], leftDir,
+            majRect(BestObb, bestObbArea, points[leftIdx], leftDir,
                                        points[rightIdx], rightDir, points[topIdx], topDir,
                                        points[bottomIdx], bottomDir)
 
-        return BestObb
     return BestObb
